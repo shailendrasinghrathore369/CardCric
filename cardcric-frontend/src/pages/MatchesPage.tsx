@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { useCards } from '../hooks/useCards';
 import { useCreateMatch, useProcessToss, useBowlBall, useMatchState } from '../hooks/useMatches';
+import { useMatchWebSocket } from '../hooks/useMatchWebSocket';
 import { useMatchStore } from '../stores/useMatchStore';
 import { ScoreBoard } from '../components/matches/ScoreBoard';
 import { BallResultView } from '../components/matches/BallResultView';
@@ -8,11 +9,13 @@ import { CardGrid } from '../components/cards/CardGrid';
 import type { MatchPhase } from '../models/Match';
 
 export function MatchesPage() {
-  const { currentMatchId, ballHistory, reset } = useMatchStore();
+  const { currentMatchId, ballHistory, isConnected, reset } = useMatchStore();
   const { data: matchState, isLoading } = useMatchState(currentMatchId);
   const { mutate: createMatch, isPending: isCreating } = useCreateMatch();
   const { mutate: processToss, isPending: isTossing } = useProcessToss();
   const { mutate: bowlBall, isPending: isBowling, data: lastResult } = useBowlBall();
+
+  useMatchWebSocket(currentMatchId);
 
   if (currentMatchId && matchState) {
     return (
@@ -20,6 +23,7 @@ export function MatchesPage() {
         state={matchState}
         matchId={currentMatchId}
         ballHistory={ballHistory}
+        isConnected={isConnected}
         lastResult={lastResult ?? null}
         onToss={(winnerId, bat) => processToss({ tossWinnerId: winnerId, electedToBat: bat })}
         onBowl={(bowlerId, batsmanId) => bowlBall({ bowlerCardId: bowlerId, batsmanCardId: batsmanId })}
@@ -169,6 +173,7 @@ function GameView({
   state,
   matchId,
   ballHistory,
+  isConnected,
   lastResult,
   onToss,
   onBowl,
@@ -179,6 +184,7 @@ function GameView({
   state: { matchId: string; phase: MatchPhase; inningsOver: boolean };
   matchId: string;
   ballHistory: { over: number; ball: number; runs: number; wicket: boolean }[];
+  isConnected: boolean;
   lastResult: { ballResult: { runsScored: number; wicket: boolean; wicketType: string | null } } | null;
   onToss: (winnerId: string, electedToBat: boolean) => void;
   onBowl: (bowlerCardId: string, batsmanCardId: string) => void;
@@ -197,12 +203,26 @@ function GameView({
         <h2 className="text-xl font-bold text-gray-800">
           Match <span className="font-mono text-sm text-gray-400">{matchId.slice(0, 8)}...</span>
         </h2>
-        <button
-          onClick={onNewGame}
-          className="rounded-md border border-gray-300 px-3 py-1 text-xs text-gray-500 hover:bg-gray-50"
-        >
-          New Match
-        </button>
+        <div className="flex items-center gap-3">
+          <span
+            className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+              isConnected
+                ? 'bg-green-100 text-green-700'
+                : 'bg-red-100 text-red-700'
+            }`}
+          >
+            <span className={`inline-block h-1.5 w-1.5 rounded-full ${
+              isConnected ? 'bg-green-500' : 'bg-red-500'
+            }`} />
+            {isConnected ? 'Live' : 'Offline'}
+          </span>
+          <button
+            onClick={onNewGame}
+            className="rounded-md border border-gray-300 px-3 py-1 text-xs text-gray-500 hover:bg-gray-50"
+          >
+            New Match
+          </button>
+        </div>
       </div>
 
       <ScoreBoard state={state as Parameters<typeof ScoreBoard>[0]['state']} />

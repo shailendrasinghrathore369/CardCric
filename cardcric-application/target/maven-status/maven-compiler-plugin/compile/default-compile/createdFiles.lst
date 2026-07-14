@@ -16,6 +16,7 @@ com\cardcric\application\command\BowlBallCommand.class
 com\cardcric\application\dto\CardDTO.class
 com\cardcric\application\port\input\AuthService.class
 com\cardcric\application\exception\InvalidCredentialsException.class
+com\cardcric\application\port\output\MatchEventBroadcaster.class
 com\cardcric\application\port\output\UserRepository.class
 com\cardcric\application\query\GetMatchStateQuery.class
 com\cardcric\application\dto\RegisterRequest.class

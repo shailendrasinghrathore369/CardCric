@@ -19,6 +19,7 @@ C:\Users\Shailendra Singh\Videos\Study Material\CardCric\cardcric-application\sr
 C:\Users\Shailendra Singh\Videos\Study Material\CardCric\cardcric-application\src\main\java\com\cardcric\application\port\input\CardUseCase.java
 C:\Users\Shailendra Singh\Videos\Study Material\CardCric\cardcric-application\src\main\java\com\cardcric\application\port\input\MatchUseCase.java
 C:\Users\Shailendra Singh\Videos\Study Material\CardCric\cardcric-application\src\main\java\com\cardcric\application\port\input\PlayerUseCase.java
+C:\Users\Shailendra Singh\Videos\Study Material\CardCric\cardcric-application\src\main\java\com\cardcric\application\port\output\MatchEventBroadcaster.java
 C:\Users\Shailendra Singh\Videos\Study Material\CardCric\cardcric-application\src\main\java\com\cardcric\application\port\output\PlayerRepository.java
 C:\Users\Shailendra Singh\Videos\Study Material\CardCric\cardcric-application\src\main\java\com\cardcric\application\port\output\UserRepository.java
 C:\Users\Shailendra Singh\Videos\Study Material\CardCric\cardcric-application\src\main\java\com\cardcric\application\query\GetCardQuery.java

@@ -40,19 +40,12 @@ export function useProcessToss() {
 export function useBowlBall() {
   const queryClient = useQueryClient();
   const currentMatchId = useMatchStore((s) => s.currentMatchId);
-  const addBallToHistory = useMatchStore((s) => s.addBallToHistory);
 
   return useMutation({
     mutationFn: (body: { bowlerCardId: string; batsmanCardId: string }) =>
       matchesApi.bowlBall(currentMatchId!, body),
     onSuccess: (data) => {
       queryClient.setQueryData(['match', data.newState.matchId], data.newState);
-      addBallToHistory({
-        over: data.overNumber,
-        ball: data.ballNumber,
-        runs: data.ballResult.runsScored,
-        wicket: data.ballResult.wicket,
-      });
     },
   });
 }

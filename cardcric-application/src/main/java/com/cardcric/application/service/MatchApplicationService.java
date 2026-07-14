@@ -6,6 +6,7 @@ import com.cardcric.application.command.ProcessTossCommand;
 import com.cardcric.application.dto.BowlBallResultDTO;
 import com.cardcric.application.dto.MatchStateDTO;
 import com.cardcric.application.port.input.MatchUseCase;
+import com.cardcric.application.port.output.MatchEventBroadcaster;
 import com.cardcric.application.query.GetMatchStateQuery;
 import com.cardcric.domain.event.MatchStartedEvent;
 import com.cardcric.domain.event.TossResultEvent;
@@ -26,11 +27,13 @@ public class MatchApplicationService implements MatchUseCase {
     private final GameEngine gameEngine;
     private final CardRepository cardRepository;
     private final MatchEventStore eventStore;
+    private final MatchEventBroadcaster broadcaster;
 
-    public MatchApplicationService(GameEngine gameEngine, CardRepository cardRepository, MatchEventStore eventStore) {
+    public MatchApplicationService(GameEngine gameEngine, CardRepository cardRepository, MatchEventStore eventStore, MatchEventBroadcaster broadcaster) {
         this.gameEngine = gameEngine;
         this.cardRepository = cardRepository;
         this.eventStore = eventStore;
+        this.broadcaster = broadcaster;
     }
 
     @Override
@@ -48,7 +51,9 @@ public class MatchApplicationService implements MatchUseCase {
         );
         eventStore.append(event);
         var initialState = gameEngine.initialize(event);
-        return MatchStateDTO.from(initialState);
+        var dto = MatchStateDTO.from(initialState);
+        broadcaster.broadcastMatchState(matchId, dto);
+        return dto;
     }
 
     @Override
@@ -63,7 +68,9 @@ public class MatchApplicationService implements MatchUseCase {
         );
         eventStore.append(event);
         var newState = gameEngine.applyEvent(state, event);
-        return MatchStateDTO.from(newState);
+        var dto = MatchStateDTO.from(newState);
+        broadcaster.broadcastMatchState(command.matchId(), dto);
+        return dto;
     }
 
     @Override
@@ -75,7 +82,9 @@ public class MatchApplicationService implements MatchUseCase {
             .orElseThrow(() -> new IllegalArgumentException("Batsman card not found: " + command.batsmanCardId()));
         var result = gameEngine.bowl(state, bowlerCard, batsmanCard);
         eventStore.append(result.event());
-        return BowlBallResultDTO.from(result);
+        var dto = BowlBallResultDTO.from(result);
+        broadcaster.broadcastBallResult(command.matchId(), dto);
+        return dto;
     }
 
     @Override
