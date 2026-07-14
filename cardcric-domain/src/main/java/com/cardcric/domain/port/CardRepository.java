@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CardRepository {
+    CricketCard save(CricketCard card);
     Optional<CricketCard> findById(UUID cardId);
     List<CricketCard> findAllById(List<UUID> cardIds);
     List<CricketCard> findAll();
