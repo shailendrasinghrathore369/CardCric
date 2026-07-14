@@ -1,0 +1,9 @@
+com\cardcric\interfaces\web\CardController.class
+com\cardcric\interfaces\web\PlayerController.class
+com\cardcric\interfaces\web\AuthenticationController.class
+com\cardcric\interfaces\web\MatchController.class
+com\cardcric\interfaces\web\request\BowlBallRequest.class
+com\cardcric\interfaces\exception\ErrorResponse.class
+com\cardcric\interfaces\web\request\ProcessTossRequest.class
+com\cardcric\interfaces\config\WebConfig.class
+com\cardcric\interfaces\exception\GlobalExceptionHandler.class

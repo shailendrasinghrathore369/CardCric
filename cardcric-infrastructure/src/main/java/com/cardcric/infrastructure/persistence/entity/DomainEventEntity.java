@@ -13,8 +13,7 @@ import java.util.UUID;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 @Entity
-@Table(name = "domain_events")
-@Index(name = "idx_aggregate_id", columnList = "aggregateId")
+@Table(name = "domain_events", indexes = @Index(name = "idx_aggregate_id", columnList = "aggregateId"))
 public class DomainEventEntity {
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
